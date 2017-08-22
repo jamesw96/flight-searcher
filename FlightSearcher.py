@@ -1,7 +1,7 @@
 import urllib.request
 import json
 
-API_KEY = "<your API Key>"
+API_KEY = "<API KEY>"
 
 def main():
     ### origin & destination -> use IATA code
@@ -9,29 +9,36 @@ def main():
     ### pass in two date for round trip results
     origin = input("Origin? ")
     destination = input("Destination? ")
+    direct_flight = input("Non-stop (Y/N)? ")
     round_trip = input("Round trip (Y/N)? ")
+    print("--------------------")
     departing_year = input("Outbounding year? ")
     departing_month = parse_input(input("Outbounding month? "))
     departing_day = parse_input(input("Outbounding day? "))
-
+    print("--------------------")
     departure_date = str(departing_year) + "-" + str(departing_month) + "-" + str(departing_day)
     returning_date = None
+
+    direct = False
+    if direct_flight == "Y":
+        direct = True
 
     if round_trip == "Y":
         returning_year = input("Inbounding year? ")
         returning_month = parse_input(input("Inbounding month? "))
         returning_day = parse_input(input("Inbounding day? "))
         returning_date = str(returning_year) + "-" + str(returning_month) + "-" + str(returning_day)
-        search_flight(origin, destination, 1, departure_date, returning_date)
+        print("--------------------")
+        search_flight(origin, destination, direct, 1, departure_date, returning_date)
     else:
-        search_flight(origin, destination, 1, departure_date)
+        search_flight(origin, destination, direct, 1, departure_date)
 
 def parse_input(input_string: str):
     if len(input_string) < 2:
         return "0" + input_string
     return input_string
 
-def search_flight(origin: str, destination: str, num: int, departure_date: str, return_date=None):
+def search_flight(origin: str, destination: str, direct_flight: bool, num: int, departure_date: str, return_date=None):
     request_string = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?"
     origin_string = "origin=" + origin + "&"
     destination_string = "destination=" + destination + "&"
@@ -40,9 +47,11 @@ def search_flight(origin: str, destination: str, num: int, departure_date: str, 
     if return_date is not None:
         r_date = "return_date=" + return_date + "&"
     result_num = "number_of_results=" + str(num) + "&"
+    direct_string = "nonstop=" + str(direct_flight) + "&"
 
-    request_string = request_string + origin_string + destination_string + d_date + r_date + result_num + "apikey=" + API_KEY
-    print(request_string)
+    request_string = request_string + origin_string + destination_string + direct_string + d_date + r_date + result_num + "apikey=" + API_KEY
+    print("Your request string: " + request_string)
+    print("--------------------")
     req = urllib.request.Request(request_string)
     file = urllib.request.urlopen(req)
     json_data = json.loads(file.read())
