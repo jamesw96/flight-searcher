@@ -4,12 +4,7 @@ Simplistic way of flight searching using Amadeus API
 Features
 --------
 
-* Testing concurrently with pytest, using one of the three modes
-    - Multiprocess (--concmode=mproc)
-    - Multithread (--concmode=mthread)
-    - Asynchronous Network with gevent (--concmode=asyncnet)
-* The ability to designate the amount of work to be used for testing
-* The ability to put your tests into separate groups
+* Interative Script for Flight Searching
 
 Requirements
 ------------
